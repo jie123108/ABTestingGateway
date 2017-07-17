@@ -25,6 +25,7 @@ ab_action.policy_check  = policy.check
 ab_action.policy_set    = policy.set
 ab_action.policy_get    = policy.get
 ab_action.policy_del    = policy.del
+ab_action.policy_list = policy.list
 
 ab_action.runtime_set   = runtime.set
 ab_action.runtime_del   = runtime.del

@@ -230,7 +230,37 @@ _M.get = function(option)
         ngx.say(response)
         return true
     end
+end
 
+_M.list = function(option)
+    local db = option.db
+
+    local pfunc = function()
+        local policyIO = policyModule:new(db.redis, policyLib) 
+        local maxPolicyId = policyIO:getMaxId()
+        local policys = {}
+        for policyId=0,maxPolicyId do 
+            local policy = policyIO:get(policyId)
+            if policy.divtype ~= ngx.null then 
+                policy.id = policyId
+                table.insert(policys, policy)
+            end
+        end
+
+        return policys
+    end
+
+    local status, info = xpcall(pfunc, handler)
+    if not status then
+        local response = doerror(info)
+        ngx.say(response)
+        return false
+    else
+        local response = doresp(ERRORINFO.SUCCESS, nil, info)
+        log:errlog(dolog(ERRORINFO.SUCCESS, nil))
+        ngx.say(response)
+        return true
+    end
 end
 
 return _M

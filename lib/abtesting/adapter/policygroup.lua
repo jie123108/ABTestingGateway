@@ -52,6 +52,18 @@ _M.getIdCount = function(self)
 end
 
 ---
+-- get max id for all policy group
+-- @return the max id
+_M.getMaxId = function(self)
+    local database = self.database
+    local key = self.idCountKey
+    local maxId, err = database:get(key)
+    if not maxId then error{ERRORINFO.REDIS_ERROR, err} end
+    
+    return maxId
+end
+
+---
 -- private function, set diversion type
 -- @param id identify a policy
 -- @param divtype diversion type (ipange/uid/...)

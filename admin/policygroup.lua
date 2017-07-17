@@ -266,4 +266,33 @@ _M.del = function(option)
     return true
 end
 
+_M.list = function(option)
+    local db = option.db
+
+    local pfunc = function()
+        local policyGroupMod = policyGroupModule:new(db.redis,
+                                        policyGroupLib, policyLib)
+        local maxPolicyId = policyGroupMod:getMaxId()
+        local policys = {}
+        for policyId=0,maxPolicyId do 
+            local policyGroup = policyGroupMod:get(policyId)
+            if #policyGroup.group > 0 then 
+                table.insert(policys, policyGroup)
+            end
+        end
+
+        return policys
+    end
+    local status, info = xpcall(pfunc, handler)
+    if not status then
+        local response = doerror(info)
+        ngx.say(response)
+        return false
+    end
+    local data = info
+    local response = doresp(ERRORINFO.SUCCESS, _, data)
+    ngx.say(response)
+    return true
+end
+
 return _M
