@@ -61,7 +61,8 @@ _M.fields = {
 _M.loglv = {
 
     ['err']					= ngx.ERR, 
-	['info']				= ngx.INFO,           ['warn']				  = ngx.WARN,      
+	['info']				= ngx.INFO,           
+    ['warn']				= ngx.WARN,      
     ['debug']				= ngx.DEBUG,           
 }
 

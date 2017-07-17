@@ -34,7 +34,7 @@ def parseCmdFile(filename):
     for line in f.readlines():
         lineN   = lineN + 1
         line    = line.strip()
-        if line == '' or line[0] == '*':
+        if line == '' or line[0] == '*' or line[0] == '#':
             continue
 
         kvCmd = line.split(':', 1)

@@ -51,9 +51,9 @@ ab分流策略格式
 	"divtype": "uidsuffix",
 	"divdata": [
 		{"suffix":1, "upstream":"beta1"},
-		{"suffix":3, "upstream":"beta2"},
-		{"suffix":5, "upstream":"beta1"},
-		{"suffix":0, "upstream":"beta3"}
+		{"suffix":2, "upstream":"beta2"},
+		{"suffix":3, "upstream":"beta3"},
+		{"suffix":4, "upstream":"beta4"}
    	 ]    
 }
 ```

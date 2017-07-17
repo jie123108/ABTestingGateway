@@ -4,7 +4,8 @@ local _M = {
 }
 
 _M.get = function()
-	local u = ngx.req.get_headers()["X-Uid"]
+    local headers = ngx.req.get_headers()
+	local u = headers["X-YF-Uid"] or headers["X-Uid"]
 	return u
 end
 return _M

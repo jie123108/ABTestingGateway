@@ -71,39 +71,63 @@ repo中的`utils/conf`文件夹中有灰度系统部署所需的最小示例
 > 目前repo的master分支是支持多级分流的版本，如果只想体验单级分流，可以fork single_diversion_release分支，具体文档都在相关分支的readme中。
 
 ```bash
-1. git clone https://github.com/SinaMSRE/ABTestingGateway
-2. cd /path/to/ABTestingGateway/utils && mkdir logs
+git clone https://github.com/SinaMSRE/ABTestingGateway
+cd /path/to/ABTestingGateway/utils && mkdir logs
 
 # 启动redis数据库
-3. redis-server conf/redis.conf 
+redis-server conf/redis.conf 
 
 # 启动upstream server，其中stable为默认upstream
-4. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/stable.conf
-5. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/beta1.conf
-6. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/beta2.conf
-7. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/beta3.conf
-8. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/beta4.conf
+nginx -c /opt/ABTestingGateway/utils/conf/stable.conf
+nginx -c /opt/ABTestingGateway/utils/conf/beta1.conf
+nginx -c /opt/ABTestingGateway/utils/conf/beta2.conf
+nginx -c /opt/ABTestingGateway/utils/conf/beta3.conf
+nginx -c /opt/ABTestingGateway/utils/conf/beta4.conf
 
 # 启动灰度系统，proxy server，灰度系统的配置也写在conf/nginx.conf中
-9. /usr/local/nginx/sbin/nginx -p `pwd` -c conf/nginx.conf
+nginx -c /opt/ABTestingGateway/utils/conf/nginx.conf
 
 # 简单验证：添加分流策略组
-$ curl 127.0.0.1:8080/ab_admin?action=policygroup_set -d '{"1":{"divtype":"uidsuffix","divdata":[{"suffix":"1","upstream":"beta1"},{"suffix":"3","upstream":"beta2"},{"suffix":"5","upstream":"beta1"},{"suffix":"0","upstream":"beta3"}]},"2":{"divtype":"arg_city","divdata":[{"city":"BJ","upstream":"beta1"},{"city":"SH","upstream":"beta2"},{"city":"XA","upstream":"beta1"},{"city":"HZ","upstream":"beta3"}]},"3":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":2130706433},"upstream":"beta2"}]}}'
+
+curl http://127.0.0.1:8080/ab_admin?action=policygroup_set -d '{"1":{"divtype":"uidsuffix","divdata":[{"suffix":"1","upstream":"beta1"},{"suffix":"3","upstream":"beta2"},{"suffix":"5","upstream":"beta1"},{"suffix":"0","upstream":"beta3"}]},"2":{"divtype":"arg_city","divdata":[{"city":"BJ","upstream":"beta1"},{"city":"SH","upstream":"beta2"},{"city":"XA","upstream":"beta1"},{"city":"HZ","upstream":"beta3"}]},"3":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":2130706433},"upstream":"beta2"}]}}'
 
 {"desc":"success ","code":200,"data":{"groupid":0,"group":[0,1,2]}}
 
+curl http://127.0.0.1:8080/ab_admin?action=policygroup_set -d '
+{"1": 
+    {
+        "divtype": "uidsuffix",
+        "divdata": [
+            {"suffix":1, "upstream":"beta1"},
+            {"suffix":2, "upstream":"beta2"}
+         ]    
+    },
+"2":
+    {
+        "divtype": "uidappoint",
+        "divdata": [
+            {"uidset":[1234,5679,999], "upstream":"beta3"},
+            {"uidset":[3214,652,145], "upstream":"beta4"}
+         ]    
+    }
+}'
+
+```
+
 # 简单验证：设置运行时策略
 
-$ curl "127.0.0.1:8080/ab_admin?action=runtime_set&hostname=api.weibo.cn&policygroupid=0"
+curl "127.0.0.1:8080/ab_admin?action=runtime_set&hostname=api.weibo.cn&policygroupid=0"
+
+curl "127.0.0.1:8080/ab_admin?action=runtime_get&hostname=api.weibo.cn"
 
 # 分流
-$ curl 127.0.0.1:8030 -H 'X-Uid:39' -H 'X-Real-IP:192.168.1.1'
+curl 127.0.0.1:8030 -H 'X-Uid:39' -H 'X-Real-IP:192.168.1.1'
 this is stable server
 
-$ curl 127.0.0.1:8030 -H 'X-Uid:30' -H 'X-Real-IP:192.168.1.1'
+curl 127.0.0.1:8030 -H 'X-Uid:30' -H 'X-Real-IP:192.168.1.1'
 this is beta3 server
 
-$ curl 127.0.0.1:8030/?city=BJ -H 'X-Uid:39' -H 'X-Real-IP:192.168.1.1'
+curl 127.0.0.1:8030/?city=BJ -H 'X-Uid:39' -H 'X-Real-IP:192.168.1.1'
 this is beta1 server
 
 ```
