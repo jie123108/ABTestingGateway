@@ -420,7 +420,7 @@ class setup_member:
         return ret
 
 
-class add_policy:
+class policygroup_set:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -445,9 +445,9 @@ class add_policy:
         return True, None
 
     def echo(self):
-        print 'action = add_policy'
+        print 'action = policygroup_set'
         for idx, policy in enumerate(self.policies):
-            print '******policy ', idx, ' ******'
+            print '******policygroup ', idx, ' ******'
             print json.dumps(policy, indent=1)
             print '**********************'
 
@@ -466,8 +466,33 @@ class add_policy:
 
         return r.json()
 
+def policygroup_info_get(baseurl, pgid):
+    req = baseurl + '?action=policygroup_get&policygroupid='+pgid
+    r = requests.get(req)
+    ret = r.json()
+    code = ret['code']
+    if code != 200:
+        return ret
 
-class get_policy:
+    policygroup = {}
+
+    pidlist = ret['data']['group']
+    for idx, pid in enumerate(pidlist):
+        req = baseurl + '?action=policy_get&policyid='+pid
+        r = requests.get(req)
+        ret = r.json()
+
+        policy = {}
+        if ret['code'] == 200:
+            policy = ret['data']
+
+        policy['policy_id'] = pid
+        pkey = 'step = <'+ str(idx) +'>'
+        policygroup[pkey] = policy
+
+    return policygroup
+
+class policygroup_get:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -492,7 +517,7 @@ class get_policy:
         return True, None
 
     def echo(self):
-        print 'action = get_policy'
+        print 'action = policygroup_get'
         print 'all the id of policygroups are ', self.policygroups
 
     def run(self):
@@ -502,37 +527,51 @@ class get_policy:
 
         policygroups = {} # result
         for pgid in self.policygroups: # pgid list
-            req = baseurl + '?action=' + cmd['action']+ '&policygroupid='+pgid
-            r = requests.get(req)
-            ret = r.json()
-            code = ret['code']
-            if code != 200:
-                return ret
-
-            policygroup = {}
-
-            policies = []
-            pidlist = ret['data']['group']
-            for idx, pid in enumerate(pidlist):
-                req = baseurl + '?action=policy_get&policyid='+pid
-                r = requests.get(req)
-                ret = r.json()
-
-                policy = {}
-                if ret['code'] == 200:
-                    policy = ret['data']
-
-                policy['policy_id'] = pid
-                pkey = 'step = <'+ str(idx) +'>'
-                policygroup[pkey] = policy
-
             pgkey = 'policygroup_id = ['+pgid+']'
-            policygroups[pgkey] = policygroup
+            policygroups[pgkey] = policygroup_info_get(baseurl, pgid)
 
         return policygroups
 
+class policygroup_list:
+    def __init__(self, host, cmdline):
+        self.host = host
+        self.url = 'http://'+ host + uri_ab
+        self.cmdline = cmdline
+        self.cmd = {}
+        self.cmd['action'] = 'policygroup_list'
+        self.policygroups = []
 
-class del_policy:
+    def check(self):
+        return True, None
+
+    def echo(self):
+        print 'action = policygroup_get'
+        print 'all the id of policygroups are ', self.policygroups
+
+    def run(self):
+        cmd = self.cmd
+        baseurl = self.url
+
+        req = baseurl + '?action=policygroup_list'
+        r = requests.get(req)
+        ret = r.json()
+        code = ret['code']
+        if code != 200:
+            return ret
+
+        policygroup = {}
+
+        pgs = ret['data']
+
+        policygroups = {} # result
+        for pg in pgs:
+            pgid = str(pg.get("groupid"))
+            pgkey = 'policygroup_id = ['+pgid+']'
+            policygroups[pgkey] = policygroup_info_get(baseurl, pgid)
+
+        return policygroups
+
+class policygroup_del:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -557,7 +596,7 @@ class del_policy:
         return True, None
 
     def echo(self):
-        print 'action = del_policy'
+        print 'action = policygroup_del'
         print 'all the id of policygroups are ', self.policygroups
 
     def run(self):
@@ -575,7 +614,7 @@ class del_policy:
                 return ret
         return ret
 
-class get_runtime:
+class runtime_get:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -599,7 +638,7 @@ class get_runtime:
         return True, None
 
     def echo(self):
-        print 'action = get_runtime'
+        print 'action = runtime_get'
         print 'all the hostnames are ', self.hostnames
 
     def run(self):
@@ -619,7 +658,7 @@ class get_runtime:
             runtimes[rkey] = runtime
         return runtimes
 
-class del_runtime:
+class runtime_del:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -643,7 +682,7 @@ class del_runtime:
         return True, None
 
     def echo(self):
-        print 'action = del_runtime'
+        print 'action = runtime_del'
         print 'all the hostnames are ', self.hostnames
 
     def run(self):
@@ -659,7 +698,7 @@ class del_runtime:
                 return ret
         return ret
 
-class set_runtime:
+class runtime_set:
     def __init__(self, host, cmdline):
         self.host = host
         self.url = 'http://'+ host + uri_ab
@@ -692,7 +731,7 @@ class set_runtime:
         return True, None
 
     def echo(self):
-        print 'action = set_runtime'
+        print 'action = runtime_set'
         print 'all the hostnames are ', self.hostnames
 
     def run(self):

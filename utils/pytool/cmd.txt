@@ -18,15 +18,16 @@ host:                       127.0.0.1:8080
 # setup_member:               stable| 1| weight=9| fail_timeout=9| max_fails=9
 # get_member:                 stable                
 
- add_policy:                  {"1":{"divtype":"uidappoint","divdata":[{"uidset":[1234,5124,653],"upstream":"beta1"},{"uidset":[3214,652,145],"upstream":"beta2"}]},"2":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":8888},"upstream":"beta3"}]}} | {"1":{"divtype":"uidappoint","divdata":[{"uidset":[1234,5124,653],"upstream":"beta1"},{"uidset":[3214,652,145],"upstream":"beta2"}]},"2":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":8888},"upstream":"beta3"}]}}
+# policygroup_set:                  {"1":{"divtype":"uidappoint","divdata":[{"uidset":[1234,5124,653],"upstream":"beta1"},{"uidset":[3214,652,145],"upstream":"beta2"}]},"2":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":8888},"upstream":"beta3"}]}} | {"1":{"divtype":"uidappoint","divdata":[{"uidset":[1234,5124,653],"upstream":"beta1"},{"uidset":[3214,652,145],"upstream":"beta2"}]},"2":{"divtype":"iprange","divdata":[{"range":{"start":1111,"end":2222},"upstream":"beta1"},{"range":{"start":3333,"end":4444},"upstream":"beta2"},{"range":{"start":7777,"end":8888},"upstream":"beta3"}]}}
 
-# del_policy:                  1
+# policygroup_list
+# policygroup_del:                  1
 
-get_policy:                  1| 2| 3
+policygroup_get:                  1| 2| 3
 
 
-del_runtime:                 api.weibo.cn
-get_runtime:                 api.weibo.cn
+runtime_del:                 api.weibo.cn
+runtime_get:                 api.weibo.cn
 
-set_runtime:                  api.weibo.cn = 2
-get_runtime:                 api.weibo.cn
+runtime_set:                  api.weibo.cn = 2
+runtime_set:                 api.weibo.cn
