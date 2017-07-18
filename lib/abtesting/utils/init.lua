@@ -19,7 +19,7 @@ _M.divtypes = {
     ["uidsuffix"]   = 'uidParser',
     ["uidappoint"]  = 'uidParser',
     ["arg_city"]    = 'cityParser',
-
+    ["version"]    = 'versionParser',
     ["url"]         = 'urlParser'
 }   
 

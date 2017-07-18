@@ -63,4 +63,12 @@ _M.doerror = function(info, extrainfo)
     return response
 end
 
+function _M.split(s, delimiter)
+    local result = {};
+    for match in string.gmatch(s, "[^"..delimiter.."]+") do
+        table.insert(result, match);
+    end
+    return result;
+end
+
 return _M

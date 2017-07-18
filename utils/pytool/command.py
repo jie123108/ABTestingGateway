@@ -715,10 +715,10 @@ class runtime_set:
             return False, 'at least 1 pair of <hostname:policyid> is needed'
 
         for idx, host_pid in enumerate(args):
-
+            print("host_pid:", host_pid)
             kv = host_pid.split('=')
             if len(kv) < 2:
-                return False, 'arg '+ kv + ' invalid'
+                return False, 'arg '+ host_pid + ' invalid'
             host = kv[0].strip()
             pid  = kv[1].strip()
 

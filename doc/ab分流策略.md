@@ -68,6 +68,18 @@ ab分流策略格式
    	 ]    
 }
 ```
+
+```bash
+#version分流
+{
+    "divtype": "version",
+    "divdata": [
+        {"version": "1.0", "upstream": "bata1"},
+        {"version": "2.1", "upstream": "bata2"}
+    ]
+}
+```
+
 * 当向系统添加分流策略时，需要将策略数据转为json类型字符串，以POST方式访问添加策略接口
 * http://www.bejson.com/jsoneditoronline/  可以将上述策略转换为字符串，用以通过post方式向系统添加策略
 * 以上四条策略的字符串格式分别为：
