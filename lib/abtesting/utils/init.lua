@@ -4,13 +4,13 @@ local _M = {}
 _M._VERSION = '0.0.1'
 
 _M.redisConf = {
-    ["uds"]      = ngx.var.redis_uds   ,
-    ["host"]     = ngx.var.redis_host,
-    ["port"]     = ngx.var.redis_port,
-    ["poolsize"] = ngx.var.redis_pool_size,
-    ["idletime"] = ngx.var.redis_keepalive_timeout , 
-    ["timeout"]  = ngx.var.redis_connect_timeout,
-    ["dbid"]     = ngx.var.redis_dbid,
+    ["uds"]      = nil,
+    ["host"]     = "127.0.0.1",
+    ["port"]     = 6379,
+    ["poolsize"] = 1000,
+    ["idletime"] = 90 * 1000, 
+    ["timeout"]  = 5 * 1000,
+    ["dbid"]     = 0,
 }
 
 _M.divtypes = {
@@ -59,11 +59,22 @@ _M.fields = {
 }
 
 _M.loglv = {
-
     ['err']					= ngx.ERR, 
 	['info']				= ngx.INFO,           
     ['warn']				= ngx.WARN,      
     ['debug']				= ngx.DEBUG,           
 }
+
+local function init_from_ext_config()
+    local confutil = require("abtesting.utils.config_util")
+    return confutil.init_from_ext_config(_M)
+end
+
+local ok, exp = pcall(init_from_ext_config)
+if not ok then
+    if ngx then
+        ngx.log(ngx.ERR, "call init_from_ext_config() failed! err:", exp)
+    end
+end
 
 return _M
