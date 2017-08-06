@@ -126,9 +126,7 @@ if __name__ == '__main__':
     if result.filename:
         print cmdFileMode
         print '\n************************************************'
-
         doCmdFile(result.filename)
-
     else:
         print cmdInteractMode
 

@@ -58,6 +58,13 @@ def checkBool(arg):
                     return True
     return False
 
+def cmdline_split(cmdline):
+    if cmdline.find("|") > 0:
+        return cmdline.split("|")
+    else:
+        return cmdline.split(",")
+
+
 class add_upstream:
     def __init__(self, host, cmdline):
         self.host = host
@@ -68,7 +75,7 @@ class add_upstream:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         upstream = args[0]
         if not checkStr(upstream):
@@ -104,7 +111,7 @@ class del_upstream:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         upstream = args[0]
         if not checkStr(upstream):
@@ -156,7 +163,7 @@ class add_member:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 6):
             return False, 'num of args is less than 6'
@@ -278,7 +285,7 @@ class del_member:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 3):
             return False, 'num of args is less than 6'
@@ -345,7 +352,7 @@ class setup_member:
     def check(self):
         cmdline = self.cmdline.strip()
         cmd  = self.cmd
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 3):
             return False, 'num of args is at least 3'
@@ -432,7 +439,7 @@ class policygroup_set:
     def check(self):
         cmdline = self.cmdline.strip()
         cmd  = self.cmd
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 policygroup is needed'
@@ -504,7 +511,7 @@ class policygroup_get:
     def check(self):
         cmdline = self.cmdline.strip()
         cmd  = self.cmd
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 policygroup_id is needed'
@@ -545,7 +552,7 @@ class policygroup_list:
         return True, None
 
     def echo(self):
-        print 'action = policygroup_get'
+        print 'action = policygroup_list'
         print 'all the id of policygroups are ', self.policygroups
 
     def run(self):
@@ -566,7 +573,7 @@ class policygroup_list:
         policygroups = {} # result
         for pg in pgs:
             pgid = str(pg.get("groupid"))
-            pgkey = 'policygroup_id = ['+pgid+']'
+            pgkey = 'pgid: '+pgid
             policygroups[pgkey] = policygroup_info_get(baseurl, pgid)
 
         return policygroups
@@ -583,7 +590,7 @@ class policygroup_del:
     def check(self):
         cmdline = self.cmdline.strip()
         cmd  = self.cmd
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 policygroup_id is needed'
@@ -625,7 +632,7 @@ class runtime_get:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 hostname is needed'
@@ -669,7 +676,7 @@ class runtime_del:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 hostname is needed'
@@ -709,7 +716,7 @@ class runtime_set:
 
     def check(self):
         cmdline = self.cmdline.strip()
-        args = cmdline.split('|')
+        args = cmdline_split(cmdline)
 
         if(len(args) < 1):
             return False, 'at least 1 pair of <hostname:policyid> is needed'
