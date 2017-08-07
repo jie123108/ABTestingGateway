@@ -58,12 +58,17 @@ def checkBool(arg):
                     return True
     return False
 
+def is_json(str):
+    return str.startswith("{") and str.endswith("}")
+
 def cmdline_split(cmdline):
+    if is_json(cmdline):
+        return [cmdline]
     if cmdline.find("|") > 0:
         return cmdline.split("|")
     else:
         return cmdline.split(",")
-
+    # return cmdline.split("|")
 
 class add_upstream:
     def __init__(self, host, cmdline):
