@@ -59,11 +59,11 @@ def checkBool(arg):
     return False
 
 def is_json(str):
-    return str.startswith("{") and str.endswith("}")
+    return str.find("{") >= 0 and str.find("}") >= 0
 
 def cmdline_split(cmdline):
     if is_json(cmdline):
-        return [cmdline]
+        return cmdline.split("|")
     if cmdline.find("|") > 0:
         return cmdline.split("|")
     else:

@@ -338,4 +338,4 @@ if upstream then
 end
 
 local info = doredirect(desc)
-log:errlog(info)
+log:info(info)
